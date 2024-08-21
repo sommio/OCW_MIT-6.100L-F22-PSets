@@ -17,27 +17,19 @@ min, max = 0, 1
 r = (min+max)/2 
 steps = 0
 epsilon = 100
+cint = lambda money,r,months: money*((1+r/12)**months)
 
 
 ##################################################################################################
 ## Determine the lowest rate of return needed to get the down payment for your dream home below ##
 ##################################################################################################
 
-def compound_interest(money, r, months):
-    '''
-    money: An integer or float
-    r: Rate of return, a float
-    mothers: An integer
-    Returns the result of the compound interest
-    '''
-    return money*((1+r/12)**months)
-
 if initial_deposit > portion_down_payment:
     r = 0
-elif compound_interest(initial_deposit, max, months) >= portion_down_payment:
+elif cint(initial_deposit, max, months) >= portion_down_payment:
     steps += 1
-    while abs(compound_interest(initial_deposit, r, months) - portion_down_payment) >= epsilon:
-        if compound_interest(initial_deposit, r, months) < portion_down_payment:
+    while abs(cint(initial_deposit, r, months) - portion_down_payment) >= epsilon:
+        if cint(initial_deposit, r, months) < portion_down_payment:
             min = r
         else:
             max = r

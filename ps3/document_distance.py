@@ -53,10 +53,7 @@ def get_frequencies(input_iterable):
     Note: 
         You can assume that the only kinds of white space in the text documents we provide will be new lines or space(s) between words (i.e. there are no tabs)
     """
-    out_dict = {}
-    for s in input_iterable:
-        out_dict[s] = input_iterable.count(s)
-    return out_dict
+    return {s:input_iterable.count(s) for s in input_iterable}
 
 
 ### Problem 2: Letter Frequencies ###
@@ -69,11 +66,8 @@ def get_letter_frequencies(word):
         is a letter in word and the corresponding int
         is the frequency of the letter in word
     """
-    out_dict = {}
-    for s in string.ascii_lowercase:
-        if word.count(s) != 0:
-            out_dict[s] = word.count(s)
-    return out_dict
+    return {s:word.count(s)
+            for s in string.ascii_lowercase if word.count(s) != 0}
 
 
 ### Problem 3: Similarity ###
@@ -101,12 +95,12 @@ def calculate_similarity_score(freq_dict1, freq_dict2):
          all frequencies in both dict1 and dict2.
         Return 1-(DIFF/ALL) rounded to 2 decimal places
     """
-    ALL = sum(freq_dict1.values()) + sum(freq_dict2.values())
-    DIFF = sum(abs(freq_dict1[k] - freq_dict2[k])
+    all = sum(freq_dict1.values()) + sum(freq_dict2.values())
+    diff = sum(abs(freq_dict1[k] - freq_dict2[k])
                  for k in freq_dict1 if k in freq_dict2)
-    DIFF += sum(freq_dict1[k] for k in freq_dict1 if k not in freq_dict2)
-    DIFF += sum(freq_dict2[k] for k in freq_dict2 if k not in freq_dict1)
-    return round(1 - (DIFF / ALL), 2)
+    diff += sum(freq_dict1[k] for k in freq_dict1 if k not in freq_dict2)
+    diff += sum(freq_dict2[k] for k in freq_dict2 if k not in freq_dict1)
+    return round(1 - (diff / all), 2)
 
 
 ### Problem 4: Most Frequent Word(s) ###
@@ -172,7 +166,7 @@ def get_idf(file_paths):
     dedup_list = []
     for f in file_paths:
         # Keep only one identical word per document, de-duplicated by dictionary
-        dedup_list += ((get_frequencies(text_to_list(load_file(f)))))
+        dedup_list += get_frequencies(text_to_list(load_file(f)))
     # Get how many documents the word appears in with get_frequencies
     return {k:(math.log10(len(file_paths) / v))
             for k,v in get_frequencies(dedup_list).items()}
@@ -255,5 +249,5 @@ if __name__ == "__main__":
     # idf = get_idf(idf_text_files)
     # tf_idf = get_tfidf(tf_text_file, idf_text_files)
     # print(tf)     # should print {'hello': 0.6666666666666666, 'world': 0.3333333333333333}
-    # print(idf)    # should print {'hello': 0.0, 'world': 0.3010299956639812, 'friends': 0.3010299956639812}
+    #print(idf)    # should print {'hello': 0.0, 'world': 0.3010299956639812, 'friends': 0.3010299956639812}
     # print(tf_idf) # should print [('hello', 0.0), ('world', 0.10034333188799373)]
